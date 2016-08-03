@@ -62,13 +62,14 @@ img {
 #items {
   display: flex;
   flex-wrap: wrap;
+  min-height: 435px;
 }
 
 #items li {
   margin: 5px;
   flex-grow: 1;
   display: flex;
-  max-height: 200px;
+  max-height: 135px;
   width: calc(100% * (1/2) - 10px - 1px);
 }
 
