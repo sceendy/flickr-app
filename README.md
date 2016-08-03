@@ -6,3 +6,5 @@ install dependencies:
 
 you'll need to generate the bablified js:
 `npm run build`
+
+_(Note: for github pages sake, I have included the babelified js on the repo)_
