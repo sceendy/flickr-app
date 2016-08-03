@@ -1,16 +1,9 @@
-/* NOTE for javascript
-    Browser compatibility on current release, current release-1 versions of browsers
-    Page load times and performance
-    Sorting and or filter options available to user
-*/
-
 // ok, declaring some static stuff that is needed and won't change
 const apiKey = 'bd9987dd291178d6ec1886920d9cd7c8';
 const userId = '24662369@N07';
 
 // cool, let's use those now
 window.onload = () => {
-  // things that won't change
   const imageList = document.getElementById('items');
   const itemsDesc = document.getElementsByClassName('items__description')[0];
   const previousBtn = document.getElementsByClassName('pagination__btn--left')[0];
@@ -18,121 +11,76 @@ window.onload = () => {
   const sortForm = document.getElementById('sortBy');
   const loadingImage = "<img src='https://33.media.tumblr.com/0ba1ba128951dff1eea53c9a35d8fe0d/tumblr_n4ux8nbU3m1sjwwzso1_500.gif' class='block--center'>";
 
-  // setting the api url to grab photo view count to use for sorting function
-  // and only requesting 15 photos per page.
-  let apiUrl = 'https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos' +
-                '&api_key=' + apiKey +  '&user_id=' + userId + '&format=json&nojsoncallback=1' +
-                '&extras=views&per_page=12';
-  let errorMsg = (e) => { return loadingImage + "<p class='text--center'>ERROR: " + e + " </p>" };
-  let totalPages;
-  let currentPage;
-  let photos;
-  let sortedBy;
+  let currentPage = 1;
 
   // some sort of cute placeholder
   imageList.innerHTML = loadingImage;
+
+  // setting the api url to grab photo view count to use for sorting function
+  const apiUrl = `https://api.flickr.com/services/rest/?method=flickr.people.getPublicPhotos&api_key=${apiKey}&user_id=${userId}&format=json&nojsoncallback=1&extras=views&per_page=12`;
+
+  // reusable error message function
+  let errorMsg = (e) => {
+    clear();
+    return `${loadingImage} <p class='text--center'>ERROR: ${e}</p>`;
+  };
+
+  let totalPages;
+  let photos;
+  let sortedBy;
+  let nextPageResults;
 
   // event listeners
   sortForm.addEventListener('change', (e) => {
     sortBy(e.target.value);
   });
 
-  previousBtn.addEventListener('click', () => {
-    previousPage();
-  });
-
-  nextBtn.addEventListener('click', () => {
-    nextPage();
-  });
-
   // function to make the GET call to the flickr API
-  let getPhotos = (page) => {
+  let getPhotos = (p) => {
     sortForm.value = 'newest';
-    previousBtn.style.display = (page === 1) ? 'none' : 'inline-block';
+    previousBtn.style.display = '';
 
-    return new Promise(function (resolve, reject) {
-      let httpRequest = new XMLHttpRequest();
-      httpRequest.open('GET', apiUrl + '&page=' + page, true);
-      imageList.innerHTML = loadingImage;
+    if (p === 1) {
+      previousBtn.style.display = 'none';
+    }
 
-      httpRequest.onload = () => {
-        if (httpRequest.status >= 200 && httpRequest.status < 400) {
-          clear();
-          totalPages = JSON.parse(httpRequest.response).photos.pages;
-          resolve(httpRequest.response);
-        }
-      }
-
-      httpRequest.onerror = () => {
-        itemsDesc.innerHTML = errorMsg('http request error');
-      }
-
-      // let's do this
-      httpRequest.send();
+    return fetch(`${apiUrl}&page=${p}`).then((response) => {
+      let _response = response.json();
+      imageList.style.minHeight = '435px';
+      clear();
+      return _response;
     });
   };
-
-  // initial call to flickr API, get photos from first page
-  getPhotos(1).then((photosData) => {
-    renderImages(photosData.photos);
-  }).catch(() => {
-      itemsDesc.innerHTML = errorMsg('get photos error');
-  });
 
   let renderImages = (_images) => {
     photos = _images.photo;
     currentPage = _images.page;
+    itemsDesc.innerHTML = `Page ${currentPage} of ${totalPages}`;
 
-    itemsDesc.innerHTML = 'Page ' + currentPage + ' of ' + totalPages;
-
+    mobileScroll();
     // for every photo in the returned array,
-    for (let p in photos) {
+    for (let photo of photos) {
       // generate photo link (could also request flicker to send url_q value but ehh more data)
-      let imageUrl = 'https://farm' + _images[p].farm + '.staticflickr.com/' + _images[p].server +
-                      '/' + _images[p].id + '_' + _images[p].secret + '.jpg';
-      _images[p].url = imageUrl;
+      let imageUrl = `https://farm${photo.farm}.staticflickr.com/${photo.server}/${photo.id}_${photo.secret}.jpg`;
+      photo.url = imageUrl;
 
       // let's send it as an argument to create a list item per photo
-      createListItem(_images[p]);
+      createListItem(photo);
     }
   };
 
   // for each photo from the array, a list item element is created
-  let createListItem = (i) => {
+  const createListItem = (i) => {
     let item = document.createElement('li');
     item.classList.add('img__container');
-    item.innerHTML = "<img src='" + i.url +  "' alt='" + i.title + "'/>";
+    item.innerHTML = `<img src="${i.url}" alt="${i.title}"/>`;
 
     // and then, that list item is attached to
     // the unordered list to be rendered HTML file
     imageList.appendChild(item);
   };
 
-  // use current page to determine what the next page is
-  let nextPage = () => {
-    // if the current page matches the numbers of pages, stop.
-    if (currentPage !== totalPages) {
-      getPhotos(currentPage + 1);
-    } else {
-      nextBtn.style.display = 'none';
-    }
-
-    if (window.innerWidth < 720){
-      window.scrollTo(0, 0);
-    }
-  };
-
-  // use current page to determine what the previous page was
-  let previousPage = () => {
-    if (currentPage !== 1) {
-      getPhotos(currentPage - 1);
-    }
-    if (window.innerWidth < 720){
-      window.scrollTo(0, 0);
-    }
-  };
-
-  let byViews = (a, b) => {
+  const byViews = (a, b) => {
     // check photo view count to compare and resort the photos
     let first = Number(a.views);
     let next = Number(b.views);
@@ -148,9 +96,7 @@ window.onload = () => {
   };
 
   // sort images by views
-  let sortBy = (arg) => {
-    sortedBy = arg;
-
+  const sortBy = (arg) => {
     photos.sort(byViews);
 
     // clear previous image order for newly sorted image order
@@ -160,11 +106,54 @@ window.onload = () => {
     for (let p in photos) {
       createListItem(photos[p]);
     }
+
+    sortedBy = arg;
   };
 
   // function to clear values
-  let clear = () => {
+  const clear = function() {
+    imageList.style.minHeight = 0;
     imageList.innerHTML = '';
     itemsDesc.innerHTML = '';
   };
+
+  const mobileScroll = function() {
+    if (window.innerWidth < 720){
+      window.scrollTo(0, 0);
+    }
+  }
+
+  // initial call to flickr API, get photos from first page
+  function getResults(page){
+    imageList.innerHTML = loadingImage;
+    return getPhotos(page).then((data) => {
+      photos = data;
+      totalPages = data.photos.pages;
+      renderImages(data.photos);
+      }).then(()=> {
+        nextPageResults = (next) => { return getPhotos(next); };
+      }).catch((e) => {
+        itemsDesc.innerHTML = errorMsg(e.toString());
+      });
+  };
+
+  getResults(currentPage);
+
+  // use current page to determine next/previous pages
+  previousBtn.addEventListener('click', function() {
+    if (currentPage !== 1) {
+      // photos(currentPage - 1);
+    }
+  });
+
+  nextBtn.addEventListener('click', function() {
+    if (currentPage !== totalPages) {
+      nextPageResults(currentPage + 1).then((nextPhotos) => {
+        clear();
+        return renderImages(nextPhotos.photos)
+      });
+    } else {
+      nextBtn.style.display = 'none';
+    }
+  });
 };

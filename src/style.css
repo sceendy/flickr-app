@@ -1,9 +1,3 @@
-/* NOTE for styles
-    Browser compatibility on current release, current release-1 versions of browsers
-    Choice of design, layout and intuitiveness of interface
-    Responsiveness across various form factors
-*/
-
 body {
   background-color: #1E1428;
   color: #fff;
@@ -22,10 +16,6 @@ body {
   max-width: 900px;
   margin-left: auto;
   margin-right: auto;
-}
-
-.heading__title {
-  text-align: center;
 }
 
 .text--center {
@@ -62,7 +52,6 @@ img {
 #items {
   display: flex;
   flex-wrap: wrap;
-  min-height: 435px;
 }
 
 #items li {
@@ -77,6 +66,7 @@ img {
   background-color: #1E1428;
   border: none;
   color: #fff;
+  display: inline-block;
   padding: 5px 20px;
 }
 
