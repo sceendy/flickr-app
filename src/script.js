@@ -79,7 +79,6 @@ window.onload = () => {
           // let's send it as an argument to create a list item per photo
           createListItem(photos[p]);
         }
-
       } else {
         // render error message for user
         itemsDesc.innerHTML = errorMsg;
@@ -134,10 +133,14 @@ window.onload = () => {
     // check photo view count to compare and resort the photos
     let first = Number(a.views);
     let next = Number(b.views);
-    if (sortedBy == 'mostViews') {
-      return ((first > next) ? -1 : ((first < next) ? 1 : 0));
-    } else {
-      return ((next > first) ? -1 : ((next < first) ? 1 : 0));
+
+    switch (sortedBy) {
+      case "mostViews":
+        return ((first > next) ? -1 : ((first < next) ? 1 : 0));
+        break;
+      case "leastViews":
+        return ((next > first) ? -1 : ((next < first) ? 1 : 0));
+        break;
     }
   };
 
@@ -145,10 +148,10 @@ window.onload = () => {
   let sortBy = (arg) => {
     sortedBy = arg;
 
-    // sort images by most views
+    // sort images by views
     photos.sort(byViews);
 
-    // then clear previous image order for newly sorted image order
+    // clear previous image order for newly sorted image order
     clear();
 
     // run list item creation function to render sorted results

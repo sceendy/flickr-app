@@ -132,10 +132,14 @@ window.onload = function () {
     // check photo view count to compare and resort the photos
     var first = Number(a.views);
     var next = Number(b.views);
-    if (sortedBy == 'mostViews') {
-      return first > next ? -1 : first < next ? 1 : 0;
-    } else {
-      return next > first ? -1 : next < first ? 1 : 0;
+
+    switch (sortedBy) {
+      case "mostViews":
+        return first > next ? -1 : first < next ? 1 : 0;
+        break;
+      case "leastViews":
+        return next > first ? -1 : next < first ? 1 : 0;
+        break;
     }
   };
 
@@ -143,10 +147,10 @@ window.onload = function () {
   var sortBy = function sortBy(arg) {
     sortedBy = arg;
 
-    // sort images by most views
+    // sort images by views
     photos.sort(byViews);
 
-    // then clear previous image order for newly sorted image order
+    // clear previous image order for newly sorted image order
     clear();
 
     // run list item creation function to render sorted results
