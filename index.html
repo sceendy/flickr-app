@@ -1,0 +1,40 @@
+<!-- NOTE for HTML
+    Browser compatibility on current release, current release-1 versions of browsers
+    Sorting and/or filter options available to user
+    Use of source control to store code
+-->
+
+<!doctype html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Build a flickr web-app that fetches images from Nasa's account via the Flickr API.">
+
+    <title>nasa flickr photos</title>
+    <link rel="stylesheet" href="style.css"/>
+  </head>
+  <body>
+    <div class="container">
+      <h1 class="heading__title">flickr.through.nasa</h1>
+      <form id="searchForm">
+        sort by views
+        <select id="sortBy">
+          <option value="mostViews">Most Views</option>
+          <option value="leastViews">Least Views</option>
+        </select>
+      </form>
+      <p class="items__description"></p>
+      <ul id="items"></ul>
+      <ul class="pagination__controls">
+        <li class="pagination__item">
+          <button type="button" class="pagination__btn--left" onclick="previousPage();">&lt; &lt; Previous</button>
+        </li>
+        <li class="pagination__item">
+          <button type="button" class="pagination__btn--right" onclick="nextPage();">Next &gt; &gt; </button>
+        </li>
+      </ul>
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

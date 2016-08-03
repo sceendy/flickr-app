@@ -1,0 +1,53 @@
+/* NOTE for styles
+    Choice of design, layout and intuitiveness of interface
+    Responsiveness across various form factors
+*/
+
+body {
+  background-color: #1E1428;
+  color: #fff;
+  font-family: 'Helvetica Neue', sans-serif;
+}
+
+.btn {
+  background-color: #f36;
+  border: 1px solid #d22852;
+  border-radius: 8px;
+  color: #fff;
+  padding: 10px 20px;
+}
+
+.container {
+  max-width: 900px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.heading__title {
+  text-align: center;
+}
+
+.text--center {
+  text-align: center;
+}
+
+ul {
+  list-style-type: none;
+  text-align: center;
+}
+
+ul > li {
+  display: inline-block;
+}
+
+.pagination__btn--left, .pagination__btn--right {
+  background-color: #1E1428;
+  border: none;
+  color: #fff;
+  padding: 5px 20px;
+}
+
+.pagination__btn--left:hover, .pagination__btn--right:hover {
+  background-color: #0f0915;
+  cursor: pointer;
+}
