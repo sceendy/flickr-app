@@ -114,7 +114,6 @@ window.onload = () => {
   const clear = function() {
     imageList.style.minHeight = 0;
     imageList.innerHTML = '';
-    itemsDesc.innerHTML = '';
   };
 
   const mobileScroll = function() {
@@ -142,15 +141,18 @@ window.onload = () => {
   // use current page to determine next/previous pages
   previousBtn.addEventListener('click', function() {
     if (currentPage !== 1) {
-      // photos(currentPage - 1);
+      nextPageResults(currentPage - 1).then((previous) => {
+        clear();
+        return renderImages(previous.photos)
+      });
     }
   });
 
   nextBtn.addEventListener('click', function() {
     if (currentPage !== totalPages) {
-      nextPageResults(currentPage + 1).then((nextPhotos) => {
+      nextPageResults(currentPage + 1).then((next) => {
         clear();
-        return renderImages(nextPhotos.photos)
+        return renderImages(next.photos)
       });
     } else {
       nextBtn.style.display = 'none';
