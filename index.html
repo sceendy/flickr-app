@@ -10,25 +10,21 @@
   </head>
   <body>
     <div class="container">
-      <h1 class="heading__title text--center">flickr.thru.nasa</h1>
-      <form id="searchForm" class="text--center">
+      <h1 class="heading__title">flickr.thru.nasa</h1>
+      <form id="searchForm">
         sort photos by
         <select id="sortBy">
-          <option value="newest" selected>Newest</option>
+          <option value="" selected></option>
           <option value="mostViews">Most Views</option>
           <option value="leastViews">Least Views</option>
         </select>
       </form>
       <ul id="items"></ul>
-      <p class="items__description text--center"></p>
-      <ul class="pagination__controls">
-        <li class="pagination__item">
-          <button type="button" class="pagination__btn--left">&lt; &lt; Previous</button>
-        </li>
-        <li class="pagination__item">
-          <button type="button" class="pagination__btn--right">Next &gt; &gt; </button>
-        </li>
-      </ul>
+      <p class="items__description"></p>
+    </div>
+    <div class="snackbar">
+      <div class="snackbar__text"></div>
+      <button type="button" id="toggleBtn"></button>
     </div>
     <!-- dependencies -->
     <!--script type="text/javascript" src="./node_modules/whatwg-fetch/fetch.js"></script-->
